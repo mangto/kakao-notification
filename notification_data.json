@@ -9,7 +9,7 @@
         "morning-alert":{
             "tag":"Morning-Alert",
             "time":"8:00",
-            "msg":"[아침알람/자동]\n학교 가기 전에 자가진단 '꼭' 하기\n\n오늘의 날씨: ///FME:Crw:weather///\n온도: ///FME:Crw:temperature///°C\n\n[오늘의 준비물]///FME:Sup///",
+            "msg":"[아침알람/자동]\n학교 가기 전에 자가진단 '꼭' 하기\n\n오늘의 날씨: ///FME:Crw:weather///\n현재 온도: ///FME:Crw:temperature///°C\n\n[오늘의 준비물]///FME:Sup///\n\n[오늘의 급식]///FME:Caf///",
             "cycle":[0,1,2,3,4]
         },
         "self-check-kit":{
@@ -17,12 +17,6 @@
             "time":"22:00",
             "msg":"[자가진단킽/자동]\n///FME:Ran:SelfCheckKit///\n\n자가검사키트 사용법\nhttps://bit.ly/35ISu8D",
             "cycle":[2,6]
-        },
-        "test":{
-            "tag":"supplies-test",
-            "time":"23:28",
-            "msg":"[아침알람/자동]\n학교 가기 전에 자가진단 '꼭' 하기\n\n오늘의 날씨: ///FME:Crw:weather///\n온도: ///FME:Crw:temperature///°C\n\n[오늘의 준비물]///FME:Sup///",
-            "cycle":[0,1,2,3,4,5,6]
         }
     },
 

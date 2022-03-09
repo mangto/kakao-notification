@@ -137,6 +137,7 @@ class FinalMsgEditor:
             if (FMETag == 'Ran'): splited_msg[i] = FinalMsgEditor.random(tags)
             elif (FMETag == 'Crw'): splited_msg[i] = FinalMsgEditor.crawl(tags)
             elif (FMETag == "Sup"): splited_msg[i] = FinalMsgEditor.supplies(tags)
+            elif (FMETag == "Caf"): splited_msg[i] = FinalMsgEditor.cafeterria()
         msg = ''
         for c in splited_msg: msg += c
 
@@ -211,8 +212,58 @@ class FinalMsgEditor:
                 msg += f"\n[*] {sup}"
 
         return msg
+    def cafeterria():
+        localtime = time.localtime()
+        month = localtime.tm_mon
+        year = localtime.tm_year
+        day = localtime.tm_mday
+        msg = ''
+        if (month < 10): month = f"0{month}"
+        else: month = str(month)
+        cafeterria_list = os.listdir('.\\cafeterria_data')
+
+        if (f"{year}{month}" in cafeterria_list):
+            cafeterria = eval(open(f'.\\cafeterria_data\\{year}{month}', 'r', encoding='utf8').read())
+            for food in cafeterria[str(day)]:
+                if ('(' in food): food = food[:food.find(')')]
+                msg += f"\n{re.sub(r'[^a-zA-Z가-힣]','',food)}"
+            return msg
+
+        URL="https://stu.goe.go.kr/sts_sci_md00_001.do"
+        params = {'schulCode':"J100002180",'schulCrseScCode':"3",'schulKndScCode':"03",'schYm':f"{year}{month}"}
+        response = requests.get(URL, params=params).text
+        data = response[response.find("<tbody>"):response.find("</tbody>")]
+        regex = re.compile(r'[\n\r\t]')
+        data=regex.sub('',data)
+        rex = re.compile(r'<div>(.*?)</div>', re.S|re.M)
+        data=rex.findall(data)
+        file_json={}
+        for dat in data:
+            date=re.findall(r"[0-3][0-9]",dat[0:2])
+            menu=dat[dat.find("[중식]<br />"):]
+            if not date:
+                date=dat[0:1]
+                if date == "" or date == " ":
+                    continue
+            if type(date) == list:
+                date=date[0]
+            menu = menu.split("<br />")
+            menu.remove(menu[0])
+            if not menu:
+                menu="None"
+            file_json.update({date : menu})
+        
+        cafeterria = file_json
+        for food in cafeterria[str(day)]:
+            if ('(' in food): food = food[:food.find(')')]
+            food = re.sub(r'[^a-zA-Z가-힣]','',food)
+            msg += f"\n{re.sub(r'[^a-zA-Z가-힣]','',food)}"
+
+        open(f".\\cafeterria_data\\{year}{month}",'w',encoding='utf8').write(str(cafeterria))
+
+        return msg
 class Notification:
-    chatroom = "임영재" #change to 3-12 after testing #chatroom name
+    chatroom = "3-12" #change to 3-12 after testing #chatroom name
 
     def get_data():
         ###  [DATA TYPE]
@@ -258,7 +309,6 @@ class Notification:
                     open_chatroom(Notification.chatroom)
                     send_text(Notification.chatroom, FinalMsgEditor.fullEdit(notific['msg']))
                     Notification.add_log(notific['tag'])
-
 
 while True:
     Notification.auto_alert()
