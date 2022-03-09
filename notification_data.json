@@ -1,0 +1,49 @@
+{
+    "default":{
+        "guide":{
+            "tag":"",
+            "time":"0:0",
+            "msg":"",
+            "cycle":[]
+        },
+        "morning-alert":{
+            "tag":"Morning-Alert",
+            "time":"8:00",
+            "msg":"[아침알람/자동]\n학교 가기 전에 자가진단 '꼭' 하기\n\n오늘의 날씨: ///FME:Crw:weather///\n온도: ///FME:Crw:temperature///°C\n\n[오늘의 준비물]///FME:Sup///",
+            "cycle":[0,1,2,3,4]
+        },
+        "self-check-kit":{
+            "tag":"Self-Check-Kit-Alert",
+            "time":"22:00",
+            "msg":"[자가진단킽/자동]\n///FME:Ran:SelfCheckKit///\n\n자가검사키트 사용법\nhttps://bit.ly/35ISu8D",
+            "cycle":[2,6]
+        },
+        "test":{
+            "tag":"supplies-test",
+            "time":"23:28",
+            "msg":"[아침알람/자동]\n학교 가기 전에 자가진단 '꼭' 하기\n\n오늘의 날씨: ///FME:Crw:weather///\n온도: ///FME:Crw:temperature///°C\n\n[오늘의 준비물]///FME:Sup///",
+            "cycle":[0,1,2,3,4,5,6]
+        }
+    },
+
+    "extra":{
+        "guide":{
+            "tag":"",
+            "day":"0/0",
+            "time":"0:0",
+            "msg":""
+        },
+        "sports_put_in:-30":{
+            "tag":"sports_put_in:-30",
+            "day":"3/14",
+            "time":"16:30",
+            "msg":"[공지/자동]\n30분 뒤 스포츠 클럽이 시작됩니다\n밑 링크로 미리 비번을 바꿔주세요!\nhttps://bit.ly/3vRsqmC\n\n신청 가능 목록\n-축구A: 35명 [남]\n-농구A: 35명 [남, 여]\n-댄스A: 35명 [여]\n-배드민턴A-1: 30명 [님]\n-배드민턴A-2: 30명 [여]\n-창의 스포츠A: 35명 [남, 여]\n-두뇌 스포츠A: 35명 [남, 여]"
+        },
+        "sports_put_in:-10":{
+            "tag":"sports_put_in:-10",
+            "day":"3/14",
+            "time":"16:50",
+            "msg":"[공지/자동]\n10분 뒤 스포츠 클럽이 시작하니 모두들 광클 준비해주세요!\n신청링크: https://bit.ly/367KNc8"
+        }
+    }
+}
