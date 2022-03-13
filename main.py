@@ -2,6 +2,8 @@ import win32api, win32con, win32gui, time, ctypes
 import pygetwindow, json, time, random, math, os, requests, re
 from bs4 import BeautifulSoup
 from ctypes import wintypes
+from oauth2client.service_account import ServiceAccountCredentials
+import gspread
 
 PBYTE256 = ctypes.c_ubyte * 256
 _user32 = ctypes.WinDLL("user32")
@@ -196,6 +198,8 @@ class FinalMsgEditor:
 
         ClassList = json.load(open('.\\FME_supplies_classes.json','r',encoding='utf8'))
         Supplies = json.load(open('.\\FME_supplies.json','r',encoding='utf8'))
+        GSupplies = json.load(open('.\\FME_supplies_gspread.json','r',encoding='utf8'))
+
         n = 1
         for class_ in ClassList[str(wday)]:
             msg += f"\n[{n}] {class_}: {Supplies['default'][class_]}"
@@ -203,12 +207,18 @@ class FinalMsgEditor:
             if (DayKey in Supplies['specific']): #specific day
                 if (class_ in Supplies['specific'][DayKey]):
                     msg += f", {Supplies['specific'][DayKey][class_]}"
+            if (DayKey in GSupplies['specific']): #specific day
+                if (class_ in GSupplies['specific'][DayKey]):
+                    msg += f", {GSupplies['specific'][DayKey][class_]}"
             
             n+=1
 
         #else supplies like survey
         if (DayKey in Supplies['else']):
             for sup in Supplies['else'][DayKey]:
+                msg += f"\n[*] {sup}"
+        if (DayKey in GSupplies['else']):
+            for sup in GSupplies['else'][DayKey]:
                 msg += f"\n[*] {sup}"
 
         return msg
@@ -262,8 +272,9 @@ class FinalMsgEditor:
         open(f".\\cafeterria_data\\{year}{month}",'w',encoding='utf8').write(str(cafeterria))
 
         return msg
+
 class Notification:
-    chatroom = "3-12" #change to 3-12 after testing #chatroom name
+    chatroom = "ㅌㅅㅌ" #change to 3-12 after testing #chatroom name
 
     def get_data():
         ###  [DATA TYPE]
@@ -281,7 +292,8 @@ class Notification:
 
         log[timetag].append(NOTIFICATION_TAG)
         json.dump(log, open('.\\notification_log.json','w',encoding='utf8'),indent="\t")
-    def auto_alert():
+    def auto_alert(room):
+        Notification.chatroom = room
         data_set = Notification.get_data()
         localtime = time.localtime()
         wday = localtime.tm_wday
@@ -310,6 +322,41 @@ class Notification:
                     send_text(Notification.chatroom, FinalMsgEditor.fullEdit(notific['msg']))
                     Notification.add_log(notific['tag'])
 
-while True:
-    Notification.auto_alert()
-    time.sleep(5)
+print(' >>> loading google spread sheet')
+scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+credentials = ServiceAccountCredentials.from_json_keyfile_name('fourth-cirrus-301609-ed9b67be5c94.json', scope)
+gc = gspread.authorize(credentials)
+gc1 = gc.open("3-12 과제 밑 숙제").worksheet('과제 및 숙제')
+print(' >>> loaded basic data')
+
+class google_spreadsheet:
+    def save_data():
+        gc2 = gc1.get_all_values()[1:]
+        result = {"specific":{},"else":{}}
+
+        #sort
+        for daily in gc2:
+            if (len(daily) < 3): continue
+            day = daily[0]
+            subject = daily[1]
+            description = daily[2]
+            if ('/' not in day): continue
+
+            if (subject == '기타'):
+                if (day not in result['else']):
+                    result['else'][day] = [description]
+                else:
+                    result['else'][day].append(description)
+            else:
+                if (day in result['specific']):
+                    if (subject not in result['specific'][day]):
+                        result['specific'][day][subject] = description
+                    else:
+                        result['specific'][day][subject] += f', {description}'
+                else:
+                    result['specific'][day] = {}
+                    result['specific'][day][subject] = description
+
+        json.dump(result, open(".\\FME_supplies_gspread.json","w",encoding='utf8'), indent="\t", ensure_ascii=False)\
+
+google_spreadsheet.save_data()

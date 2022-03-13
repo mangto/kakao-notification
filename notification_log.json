@@ -4,7 +4,16 @@
 		"supplies-test"
 	],
 	"2022-3-10": [
+		"Morning-Alert",
 		"test",
+		"covid: test"
+	],
+	"2022-3-11": [
+		"covid: test",
 		"Morning-Alert"
+	],
+	"2022-3-12": [
+		"covid: test",
+		"test"
 	]
 }
