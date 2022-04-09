@@ -2,6 +2,9 @@ import win32api, win32con, win32gui, time, ctypes
 import pygetwindow, json, time, random, math, os, requests, re
 from bs4 import BeautifulSoup
 from ctypes import wintypes
+import datetime
+
+# google spread sheet
 from oauth2client.service_account import ServiceAccountCredentials
 import gspread
 
@@ -140,6 +143,8 @@ class FinalMsgEditor:
             elif (FMETag == 'Crw'): splited_msg[i] = FinalMsgEditor.crawl(tags)
             elif (FMETag == "Sup"): splited_msg[i] = FinalMsgEditor.supplies(tags)
             elif (FMETag == "Caf"): splited_msg[i] = FinalMsgEditor.cafeterria()
+            elif (FMETag == "TD"): splited_msg[i] = FinalMsgEditor.TestD()
+            elif (FMETag == "PED"): splited_msg[i] = FinalMsgEditor.PED()
         msg = ''
         for c in splited_msg: msg += c
 
@@ -221,6 +226,7 @@ class FinalMsgEditor:
             for sup in GSupplies['else'][DayKey]:
                 msg += f"\n[*] {sup}"
 
+
         return msg
     def cafeterria():
         localtime = time.localtime()
@@ -272,7 +278,29 @@ class FinalMsgEditor:
         open(f".\\cafeterria_data\\{year}{month}",'w',encoding='utf8').write(str(cafeterria))
 
         return msg
+    def TestD():
+        localtime = time.localtime()
+        return str(122 - localtime.tm_yday)
+    def PED():
+        msg = ''
+        GSupplies = json.load(open('.\\FME_supplies_gspread.json','r',encoding='utf8'))
 
+        today = datetime.date.today()
+        for date in GSupplies['PED']:
+
+            date_ = date.split("/")
+            month = int(date_[0])
+            day = int(date_[1])
+
+            DDAY = (datetime.date(2022,month,day)-today).days
+            if (DDAY < 5):
+                for description in GSupplies['PED'][date]:
+                    msg += f'\n[D-{DDAY}] {description}'
+
+        if (msg == ''):
+            return '없다!'
+
+        return msg
 class Notification:
     chatroom = "ㅌㅅㅌ" #change to 3-12 after testing #chatroom name
 
@@ -332,8 +360,7 @@ print(' >>> loaded basic data')
 class google_spreadsheet:
     def save_data():
         gc2 = gc1.get_all_values()[1:]
-        result = {"specific":{},"else":{}}
-
+        result = {"specific":{},"else":{},"PED":{}}
         #sort
         for daily in gc2:
             if (len(daily) < 3): continue
@@ -347,6 +374,19 @@ class google_spreadsheet:
                     result['else'][day] = [description]
                 else:
                     result['else'][day].append(description)
+
+            elif (subject == '수행'):
+                date = day.split("/")
+                month = int(date[0])
+                day_ = int(date[1])
+
+                if (day in result['PED']):
+                    result["PED"][day].append(description)
+                else:
+                    result['PED'][day] = []
+                    result["PED"][day].append(description)
+
+
             else:
                 if (day in result['specific']):
                     if (subject not in result['specific'][day]):
@@ -357,6 +397,6 @@ class google_spreadsheet:
                     result['specific'][day] = {}
                     result['specific'][day][subject] = description
 
-        json.dump(result, open(".\\FME_supplies_gspread.json","w",encoding='utf8'), indent="\t", ensure_ascii=False)\
+        json.dump(result, open(".\\FME_supplies_gspread.json","w",encoding='utf8'), indent="\t", ensure_ascii=False)
 
 google_spreadsheet.save_data()
