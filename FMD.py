@@ -1,7 +1,7 @@
 import json, time, random, math, os, requests, re
 from bs4 import BeautifulSoup
 
-#ㅎㅇㅎㅇㅎㅇ
+#해냈구나!
 
 def encrypt(string: str,seed:int=5,length=20):
     if(type(string) != str):
