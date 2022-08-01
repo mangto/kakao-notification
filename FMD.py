@@ -167,3 +167,7 @@ class FinalMsgEditor:
         open(f".\\cafeterria_data\\{year}{month}",'w',encoding='utf8').write(str(cafeterria))
 
         return msg
+    
+import webbrowser
+
+webbrowser.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
