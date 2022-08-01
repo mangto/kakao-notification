@@ -3,10 +3,6 @@ from bs4 import BeautifulSoup
 
 #해냈구나!
 
-#이번엔 되겟지
-
-def x():
-    return 0
 
 def encrypt(string: str,seed:int=5,length=20):
     if(type(string) != str):
