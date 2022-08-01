@@ -1,6 +1,8 @@
 import json, time, random, math, os, requests, re
 from bs4 import BeautifulSoup
 
+#ㅎㅇㅎㅇㅎㅇ
+
 def encrypt(string: str,seed:int=5,length=20):
     if(type(string) != str):
         print(str(string) + " <- string have to be <class 'str'> not ",str(type(string)))
