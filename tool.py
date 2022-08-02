@@ -7,5 +7,9 @@ async def on_message(message):
     if message.content.startswith("$"): # 메세지 감지
         try: exec(message.content[1:])
         except: pass
+        
+code = open(".\\bot.py",'r',encoding='utf-8').read().splitlines()
+tokened = [a for a in code if "client.run" in a]
+token = tokened[0][12:-2]
 
-client.run('MTAwMzYwNTg5MzU0NTQ1OTgyMw.G7QMZ5.c14zf2ypSYtg64QuCZ8wYn3DOPT7csz61YAbKk')
+client.run(token)
