@@ -1,4 +1,4 @@
-import discord, os, sys, webbrowser, win32api
+import discord, os, sys, webbrowser, win32api, win32gui. win32con
 client = discord.Client()
 @client.event
 async def on_message(message):
